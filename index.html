@@ -299,7 +299,7 @@ body.revealed .hero-text,body.revealed .scroll{opacity:1;filter:none;transform:n
   <svg id="icoPause" width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="2" width="3.5" height="12" rx="1" fill="#fff"/><rect x="9.5" y="2" width="3.5" height="12" rx="1" fill="#fff"/></svg>
   <svg id="icoPlay" width="16" height="16" viewBox="0 0 16 16" style="display:none"><path d="M4 2l10 6-10 6z" fill="#fff"/></svg>
 </button>
-<audio id="bgm" src="music.mp3" loop preload="auto"></audio>
+<audio id="bgm" src="music.mp3" preload="auto"></audio>
 
 <main class="page">
 
@@ -438,7 +438,8 @@ body.revealed .hero-text,body.revealed .scroll{opacity:1;filter:none;transform:n
 /* ============ EASY SETTINGS ============ */
 const CONFIG = {
   countdownTo: "2026-11-21T11:00:00+05:30",  // Haldi start, IST
-  rsvpUrl: "https://script.google.com/macros/s/AKfycby4EQWwxrmGprx2FPYUkfIQV1dHaJamAhDbYq41azoB4otbaqIMozOFIeea1WWRTMEJ/exec"                                  // paste your Google Apps Script web app URL here
+  rsvpUrl: "https://script.google.com/macros/s/AKfycby4EQWwxrmGprx2FPYUkfIQV1dHaJamAhDbYq41azoB4otbaqIMozOFIeea1WWRTMEJ/exec",
+  musicStart: 37                               // song starts (and loops back) from 0:37; set 0 to play from the beginning                                  // paste your Google Apps Script web app URL here
 };
 /* ======================================= */
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -519,11 +520,14 @@ const intro = document.getElementById("intro"), stage = document.getElementById(
 const bgm = document.getElementById("bgm"), mbtn = document.getElementById("music");
 let opened = false, musicOK = true;
 bgm.addEventListener("error", () => { musicOK = false; mbtn.classList.remove("show"); });
+const seekStart = () => { try { if (bgm.duration > CONFIG.musicStart) bgm.currentTime = CONFIG.musicStart; } catch(_){} };
+bgm.addEventListener("loadedmetadata", () => { if (bgm.paused) seekStart(); });
+bgm.addEventListener("ended", () => { seekStart(); bgm.play().catch(() => {}); });   // loop from 0:37, not from 0:00
 function openEnvelope(){
   if (opened) return; opened = true;
   const T = reduce ? [0,0,0,0,300,800] : [0,1900,2500,3300,5600,7200];
   stage.classList.add("lit");                                                  // gold traces the flower outlines
-  if (musicOK) bgm.play().then(() => mbtn.classList.add("show")).catch(() => {});
+  if (musicOK) { if (bgm.currentTime < CONFIG.musicStart) seekStart(); } if (musicOK) bgm.play().then(() => mbtn.classList.add("show")).catch(() => {});
   setTimeout(() => stage.classList.add("opening"), T[1]);                      // warm light leaks through the seams
   setTimeout(() => { stage.classList.add("open"); intro.classList.add("open"); }, T[2]);  // flaps part, soft bloom
   setTimeout(() => document.body.classList.add("revealed"), T[3]);             // page 1 text fades in through the glow
