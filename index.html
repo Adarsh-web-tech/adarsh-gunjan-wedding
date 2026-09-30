@@ -592,8 +592,10 @@ mbtn.addEventListener("click", () => {
     const data = new URLSearchParams({ name, attending, guests: attending === "Unable to attend" ? 0 : guests, message: form.message.value.trim() });
     send.disabled = true; send.textContent = "Sending..."; msg.textContent = "";
     try {
-      try { const r = await fetch(CONFIG.rsvpUrl, { method: "POST", body: data }); const j = await r.json(); if (!j.ok) throw new Error("rejected"); }
-      catch (err) { if (err.message === "rejected") throw err; await fetch(CONFIG.rsvpUrl, { method: "POST", body: data, mode: "no-cors" }); }
+      let r;
+      try { r = await fetch(CONFIG.rsvpUrl, { method: "POST", body: data }); }
+      catch (netErr) { r = null; await fetch(CONFIG.rsvpUrl, { method: "POST", body: data, mode: "no-cors" }); }   // browser blocked reading the reply; the RSVP is still sent
+      if (r) { const j = await r.json().catch(() => null); if (!j || !j.ok) throw new Error("Sheet did not accept the RSVP"); }
       try { localStorage.setItem("rsvp-ag", JSON.stringify({ name, attending })); } catch(_){}
       showDone(name, attending);
     } catch (_) {
