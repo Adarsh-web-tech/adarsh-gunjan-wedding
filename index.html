@@ -657,7 +657,7 @@ document.addEventListener("DOMContentLoaded", () => document.querySelectorAll("i
   <svg id="icoPause" width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="2" width="3.5" height="12" rx="1" fill="#fff"/><rect x="9.5" y="2" width="3.5" height="12" rx="1" fill="#fff"/></svg>
   <svg id="icoPlay" width="16" height="16" viewBox="0 0 16 16" style="display:none"><path d="M4 2l10 6-10 6z" fill="#fff"/></svg>
 </button>
-<audio id="bgm" src="music.mp3#t=35" preload="auto" playsinline></audio>
+<audio id="bgm" src="music.mp3#t=33" preload="auto" playsinline></audio>
 
 <main class="page">
 
@@ -829,7 +829,7 @@ const CONFIG = {
   },
   countdownTo: "2026-11-21T11:00:00+05:30",  // Haldi start, IST
   rsvpUrl: "https://script.google.com/macros/s/AKfycby4EQWwxrmGprx2FPYUkfIQV1dHaJamAhDbYq41azoB4otbaqIMozOFIeea1WWRTMEJ/exec",
-  musicStart: 35                               // song starts (and loops back) from 0:34; set 0 to play from the beginning                                  // paste your Google Apps Script web app URL here
+  musicStart: 33                               // song starts (and loops back) from 0:34; set 0 to play from the beginning                                  // paste your Google Apps Script web app URL here
 };
 /* ======================================= */
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1016,8 +1016,8 @@ function fadeIn(sec){                        // very quiet for the first second,
   setTimeout(() => { fading = false; }, sec*1000 + 50);
 }
 function guardStart(){
-  if (!CONFIG.musicStart) { if (bgm.muted) { bgm.muted = false; fadeIn(6); } return; }
-  if (!atStart()) seekStart(); else if (bgm.muted) { bgm.muted = false; fadeIn(6); }
+  if (!CONFIG.musicStart) { if (bgm.muted) { bgm.muted = false; fadeIn(8); } return; }
+  if (!atStart()) seekStart(); else if (bgm.muted) { bgm.muted = false; fadeIn(8); }
 }
 ["loadedmetadata","canplay","playing","timeupdate","seeked"].forEach(ev => bgm.addEventListener(ev, guardStart));
 bgm.addEventListener("ended", () => { bgm.muted = true; if (gainNode) gainNode.gain.value = 0; seekStart(); bgm.play().catch(() => {}); });   // loop from 0:34
