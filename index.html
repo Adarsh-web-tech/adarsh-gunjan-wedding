@@ -209,8 +209,8 @@ body.revealed .hero-text,body.revealed .scroll{opacity:1;filter:none;transform:n
 .fld{display:grid;gap:6px;border:0}
 .fld > span,.fld legend{font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#8A6A5E;padding:0}
 .fld em{text-transform:none;letter-spacing:0;font-style:italic}
-.fld input[type=text],.fld textarea{width:100%;font:inherit;font-size:18px;color:#4E2A2A;background:rgba(255,255,255,.55);border:1px solid #DDBFB0;border-radius:12px;padding:11px 14px;outline:none;transition:border-color .2s,box-shadow .2s;resize:none}
-.fld input[type=text]:focus,.fld textarea:focus{border-color:#9C5A5E;box-shadow:0 0 0 3px rgba(156,90,94,.12)}
+.fld input[type=text],.fld input[type=tel],.fld textarea{width:100%;font:inherit;font-size:18px;color:#4E2A2A;background:rgba(255,255,255,.55);border:1px solid #DDBFB0;border-radius:12px;padding:11px 14px;outline:none;transition:border-color .2s,box-shadow .2s;resize:none}
+.fld input[type=text]:focus,.fld input[type=tel]:focus,.fld textarea:focus{border-color:#9C5A5E;box-shadow:0 0 0 3px rgba(156,90,94,.12)}
 .stepper{display:flex;align-items:center;gap:0;width:max-content;border:1px solid #DDBFB0;border-radius:999px;background:rgba(255,255,255,.55);overflow:hidden}
 .stepper button{width:46px;height:44px;border:0;background:transparent;font-size:22px;color:#7B1E2E;cursor:pointer}
 .stepper output{min-width:44px;text-align:center;font-size:20px;font-weight:600;color:#4E2A2A;font-variant-numeric:tabular-nums}
@@ -716,7 +716,7 @@ document.addEventListener("DOMContentLoaded", () => document.querySelectorAll("i
     <div class="tl">
       <div class="line"></div>
       <div class="row"><div class="t">11:00<small>AM</small></div><div class="dot"></div><div class="e">Haldi, followed by pool party</div></div>
-      <div class="row"><div class="t">3:00<small>PM</small></div><div class="dot"></div><div class="e">Mamera</div></div>
+      <div class="row"><div class="t">4:00<small>PM</small></div><div class="dot"></div><div class="e">Mamera</div></div>
       <div class="row"><div class="t">7:00<small>PM</small></div><div class="dot"></div><div class="e">Sangeet</div></div>
       <img class="trose" data-asset="a6" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="">
     </div>
@@ -773,7 +773,7 @@ document.addEventListener("DOMContentLoaded", () => document.querySelectorAll("i
       </div>
     </div>
 
-    <label class="fld"><span>A note for the couple <em>(optional)</em></span><textarea name="message" rows="2" maxlength="300"></textarea></label>
+    <label class="fld"><span>Enter phone number <em>(optional)</em></span><input type="tel" name="message" inputmode="tel" maxlength="15" autocomplete="tel" placeholder="e.g. 98765 43210"></label>
 
     <button class="send" type="submit" id="rsvpSend">Send RSVP</button>
     <p class="rs-msg" id="rsvpMsg" aria-live="polite"></p>
@@ -823,13 +823,13 @@ document.addEventListener("DOMContentLoaded", () => document.querySelectorAll("i
 const CONFIG = {
   help: {                                       // "Here to Help" contacts: fill these in when ready
     instagram: "aalishaan_events",              // Instagram ID (without @)
-    event:       [ { name: "Sshaineel", phone: "9131959138" }, { name: "Anooj Jain", phone: "9039510593" } ],
+    event:       [ { name: "Sshaineel Jain", phone: "9131959138" }, { name: "Anooj Jain", phone: "9039510593" } ],
     hospitality: [ { name: "", phone: "" } ],
     logistics:   [ { name: "", phone: "" } ]
   },
   countdownTo: "2026-11-21T11:00:00+05:30",  // Haldi start, IST
   rsvpUrl: "https://script.google.com/macros/s/AKfycby4EQWwxrmGprx2FPYUkfIQV1dHaJamAhDbYq41azoB4otbaqIMozOFIeea1WWRTMEJ/exec",
-  musicStart: 33                               // song starts (and loops back) from 0:34; set 0 to play from the beginning                                  // paste your Google Apps Script web app URL here
+  musicStart: 33                               // song starts (and loops back) from 0:33; set 0 to play from the beginning                                  // paste your Google Apps Script web app URL here
 };
 /* ======================================= */
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1003,7 +1003,7 @@ function setupAudio(){                       // call inside the tap so iPhone al
     gainNode.gain.value = 0; src.connect(gainNode).connect(actx.destination);
   } catch (_) { actx = null; gainNode = null; }
 }
-function fadeIn(sec){                        // very quiet for the first second, then rising to full
+function fadeIn(sec){                        // gentle rise: a little louder every second until full
   if (fading) return; fading = true;
   const curve = new Float32Array(64); for (let i = 0; i < 64; i++) { const t = i/63; curve[i] = Math.pow(t, 1.5); }
   if (gainNode) {
@@ -1020,7 +1020,7 @@ function guardStart(){
   if (!atStart()) seekStart(); else if (bgm.muted) { bgm.muted = false; fadeIn(8); }
 }
 ["loadedmetadata","canplay","playing","timeupdate","seeked"].forEach(ev => bgm.addEventListener(ev, guardStart));
-bgm.addEventListener("ended", () => { bgm.muted = true; if (gainNode) gainNode.gain.value = 0; seekStart(); bgm.play().catch(() => {}); });   // loop from 0:34
+bgm.addEventListener("ended", () => { bgm.muted = true; if (gainNode) gainNode.gain.value = 0; seekStart(); bgm.play().catch(() => {}); });   // loop from 0:33
 
 /* glints that wander along the edges of random flowers while the envelope opens */
 const SPARK_SPOTS = [[18,24],[22,31],[15,40],[19,58],[13,66],[24,52],[11,78],[26,86],[34,92],
@@ -1124,6 +1124,8 @@ mbtn.addEventListener("click", () => {
   new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { pr.classList.add("in"); o.disconnect(); } }), {threshold:.35}).observe(pr); })();
 
 /* ---------- RSVP -> Google Sheet ---------- */
+(function(){ const ph = document.querySelector('#rsvpForm input[name="message"]'); if (!ph) return;
+  ph.addEventListener("input", () => { const v = ph.value.replace(/[^0-9+\-\s()]/g, "").slice(0, 15); if (v !== ph.value) ph.value = v; }); })();
 (function(){
   const form = document.getElementById("rsvpForm"), done = document.getElementById("rsvpDone"), msg = document.getElementById("rsvpMsg");
   const send = document.getElementById("rsvpSend"), out = document.getElementById("gCount"), stepper = document.getElementById("stepper");
